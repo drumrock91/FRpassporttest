@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我的法芮療癒護照</title>
+  <meta name="description" content="查看目前療癒旅程、進度、下一次回訪提醒、療癒戳章、季節限定章與年度療癒報告。">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f3d39'/%3E%3Cpath d='M18 13h24a8 8 0 0 1 8 8v30H26a8 8 0 0 1-8-8V13Z' fill='%23f1c86a'/%3E%3Cpath d='M25 23h16M25 32h18M25 41h10' stroke='%231f3d39' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='45' cy='46' r='8' fill='%23d96b5f'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --ink: #172321;
+      --muted: #61716d;
+      --deep: #1f3d39;
+      --leaf: #397a69;
+      --mint: #d9efe6;
+      --gold: #f1c86a;
+      --sun: #fff3c6;
+      --rose: #ffe6df;
+      --coral: #d96b5f;
+      --plum: #6b587d;
+      --sky: #dceaf7;
+      --cream: #fffaf1;
+      --paper: #f7efe3;
+      --white: #fffdf8;
+      --line: rgba(23, 35, 33, .14);
+      --line-strong: rgba(23, 35, 33, .24);
+      --shadow: 0 18px 46px rgba(31, 61, 57, .14);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(241, 200, 106, .28), transparent 24rem),
+        linear-gradient(150deg, #fffaf1 0%, #edf7f2 48%, #fff2ec 100%);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    button { font: inherit; border: 0; cursor: pointer; }
+
+    .page {
+      max-width: 74rem;
+      margin: 0 auto;
+      padding: 1rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .topbar {
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .brand-mark {
+      width: 2.6rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: .45rem;
+      color: var(--deep);
+      background: linear-gradient(135deg, var(--gold), #fff4bf);
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55);
+    }
+
+    .brand strong { display: block; color: var(--deep); font-size: 1.05rem; }
+    .brand span { display: block; margin-top: .15rem; color: var(--muted); font-size: .82rem; }
+
+    .member-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.4rem;
+      padding: .45rem .75rem;
+      border: 1px solid var(--line);
+      border-radius: 99rem;
+      background: rgba(255, 253, 248, .72);
+      color: var(--deep);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(21rem, .92fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .passport,
+    .card {
+      border: 1px solid var(--line);
+      border-radius: .7rem;
+      background: rgba(255, 253, 248, .86);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .passport-cover {
+      min-height: 29rem;
+      padding: clamp(1.2rem, 3vw, 2.2rem);
+      color: #fffaf1;
+      background:
+        linear-gradient(rgba(255, 255, 255, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .08) 1px, transparent 1px),
+        linear-gradient(145deg, #1f3d39 0%, #397a69 100%);
+      background-size: 2.3rem 2.3rem, 2.3rem 2.3rem, auto;
+      display: grid;
+      align-content: space-between;
+    }
+
+    .passport-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      color: rgba(255, 250, 241, .72);
+      font-size: .84rem;
+    }
+
+    h1 {
+      margin: 1.6rem 0 .7rem;
+      font-size: clamp(2.2rem, 6vw, 5.2rem);
+      line-height: .92;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 34rem;
+      margin: 0;
+      color: rgba(255, 250, 241, .78);
+      line-height: 1.72;
+      font-size: 1.05rem;
+    }
+
+    .next-visit {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: .75rem;
+      align-items: center;
+      margin-top: 1.4rem;
+      padding: .9rem;
+      border: 1px solid rgba(255, 250, 241, .22);
+      border-radius: .55rem;
+      background: rgba(255, 250, 241, .12);
+      text-align: left;
+      color: inherit;
+    }
+
+    .date-badge {
+      width: 4.5rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: .6rem;
+      color: var(--deep);
+      background: var(--gold);
+      text-align: center;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .date-badge small { display: block; font-size: .75rem; }
+    .next-visit h2 { margin: 0 0 .22rem; font-size: 1.08rem; }
+    .next-visit p { margin: 0; color: rgba(255, 250, 241, .78); line-height: 1.5; font-size: .94rem; }
+
+    .status-card {
+      padding: 1.1rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .section-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 800;
+    }
+
+    .journey-title { display: grid; gap: .55rem; }
+    .journey-title strong { color: var(--deep); font-size: clamp(1.7rem, 3vw, 2.35rem); line-height: 1.1; }
+    .journey-title p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .progress-box {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: .6rem;
+      background: var(--white);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .75rem;
+      color: var(--deep);
+      font-weight: 900;
+    }
+
+    .track { height: .82rem; overflow: hidden; border-radius: 99rem; background: rgba(23, 35, 33, .1); }
+    .fill { width: 66%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--coral), var(--gold), var(--leaf)); }
+
+    .station-list { margin-top: .95rem; display: grid; gap: .55rem; }
+
+    .station {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: .65rem;
+      align-items: center;
+      min-height: 2.75rem;
+      padding: .6rem;
+      border-radius: .45rem;
+      background: var(--paper);
+    }
+
+    .station b {
+      width: 1.9rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--deep);
+      background: rgba(31, 61, 57, .12);
+      font-size: .85rem;
+    }
+
+    .station.done b { background: var(--gold); }
+    .station.current { background: var(--rose); }
+    .station.current b { color: #fffaf1; background: var(--coral); }
+    .station span { color: var(--deep); font-weight: 800; }
+    .station small { color: var(--muted); }
+
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+
+    .card-header { padding: 1rem 1rem .25rem; }
+    .card-header h2 { margin: 0; color: var(--deep); font-size: 1.35rem; }
+    .card-header p { margin: .35rem 0 0; color: var(--muted); line-height: 1.58; }
+    .card-body { padding: 1rem; }
+
+    .stamp-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+
+    .stamp {
+      min-height: 8rem;
+      padding: .75rem;
+      border: 1px dashed var(--line-strong);
+      border-radius: .55rem;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: var(--white);
+      color: var(--muted);
+    }
+
+    .stamp.earned {
+      border-style: solid;
+      border-color: rgba(241, 200, 106, .82);
+      background: #fff6d6;
+      color: var(--deep);
+      box-shadow: inset 0 0 0 .35rem rgba(255, 255, 255, .45);
+    }
+
+    .stamp.current {
+      border-style: solid;
+      border-color: rgba(217, 107, 95, .72);
+      background: #fff0ec;
+      color: #8d3a31;
+    }
+
+    .stamp strong { display: block; font-size: 1rem; line-height: 1.25; }
+    .stamp span { display: block; margin-top: .35rem; font-size: .84rem; line-height: 1.35; }
+
+    .season-list { display: grid; gap: .7rem; }
+
+    .season {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: .75rem;
+      align-items: center;
+      padding: .75rem;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: var(--white);
+    }
+
+    .season-icon {
+      width: 3rem;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: .55rem;
+      color: var(--deep);
+      background: var(--mint);
+      font-weight: 900;
+    }
+
+    .season:nth-child(2) .season-icon { background: var(--sky); }
+    .season:nth-child(3) .season-icon { background: var(--sun); }
+    .season:nth-child(4) .season-icon { color: #fffaf1; background: var(--plum); }
+    .season h3 { margin: 0 0 .2rem; color: var(--deep); font-size: 1rem; }
+    .season p { margin: 0; color: var(--muted); line-height: 1.45; font-size: .9rem; }
+
+    .season-state {
+      min-width: 4.5rem;
+      text-align: center;
+      padding: .35rem .5rem;
+      border-radius: 99rem;
+      color: var(--deep);
+      background: rgba(31, 61, 57, .1);
+      font-size: .82rem;
+      font-weight: 900;
+    }
+
+    .season-state.active { color: #fffaf1; background: var(--leaf); }
+
+    .report { display: grid; grid-template-columns: minmax(20rem, .9fr) minmax(0, 1.1fr); gap: 1rem; align-items: stretch; }
+
+    .report-cover {
+      min-height: 22rem;
+      padding: 1rem;
+      color: #fffaf1;
+      background: linear-gradient(145deg, #1f3d39, #6b587d);
+    }
+
+    .report-cover h2 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.08; }
+
+    .report-stats { margin-top: 1.4rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+
+    .report-stat {
+      min-height: 6.3rem;
+      padding: .8rem;
+      border-radius: .55rem;
+      background: rgba(255, 255, 255, .13);
+    }
+
+    .report-stat span { color: rgba(255, 250, 241, .7); font-size: .84rem; }
+    .report-stat strong { display: block; margin-top: .35rem; font-size: 1.65rem; }
+
+    .report-copy { padding: 1rem; display: grid; align-content: center; gap: 1rem; }
+    .report-copy h2 { margin: 0; color: var(--deep); font-size: 1.55rem; }
+    .report-copy p { margin: 0; color: var(--muted); line-height: 1.72; font-size: 1.02rem; }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: .65rem; }
+
+    .btn {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .65rem 1rem;
+      border-radius: .5rem;
+      text-decoration: none;
+      font-weight: 900;
+      transition: transform .2s ease;
+    }
+
+    .btn.primary { color: #fffaf1; background: var(--deep); }
+    .btn.secondary { color: var(--deep); background: var(--mint); }
+    .btn:hover { transform: translateY(-1px); }
+
+    .toast {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      max-width: min(24rem, calc(100vw - 2rem));
+      padding: .85rem 1rem;
+      border-radius: .55rem;
+      color: #fffaf1;
+      background: var(--deep);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(.5rem);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .hero, .grid, .report { grid-template-columns: 1fr; }
+      .stamp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: .75rem; }
+      .topbar { align-items: start; display: grid; }
+      .member-chip { width: fit-content; }
+      .passport-cover { min-height: auto; }
+      .passport-meta { display: grid; }
+      .next-visit { grid-template-columns: 1fr; }
+      .station, .season { grid-template-columns: auto 1fr; }
+      .station small, .season-state { grid-column: 2; justify-self: start; }
+      .stamp-grid, .report-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">F</div>
+        <div>
+          <strong>我的法芮療癒護照</strong>
+          <span>個人療癒旅程進度</span>
+        </div>
+      </div>
+      <div class="member-chip">會員｜林小姐</div>
+    </header>
+
+    <section class="hero" aria-label="目前旅程與回訪提醒">
+      <article class="passport">
+        <div class="passport-cover">
+          <div class="passport-meta">
+            <span>DIGITAL HEALING PASSPORT</span>
+            <span>FR-2027-018</span>
+          </div>
+          <div>
+            <h1>舒壓之旅<br>第 2 站</h1>
+            <p class="hero-copy">你正在完成「舒壓之旅」。這趟旅程會從五感舒壓進入深層舒眠，最後串接頭皮與 VIVISPA 身體療癒，讓放鬆感延續下去。</p>
+            <button class="next-visit" type="button">
+              <div class="date-badge"><small>下次</small>10/12</div>
+              <div>
+                <h2>建議回店延續旅程</h2>
+                <p>下次適合進入「深層舒眠」。建議在 28 天內回來，延續這次放鬆後的身體節奏。</p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <aside class="card status-card">
+        <div class="section-label">
+          <span>目前所在旅程</span>
+          <span>2 / 3 站</span>
+        </div>
+        <div class="journey-title">
+          <strong>舒壓之旅</strong>
+          <p>已完成五感舒壓，正在前往深層舒眠。完成整趟旅程後，會獲得「極致療癒旅人」戳章。</p>
+        </div>
+        <div class="progress-box">
+          <div class="progress-top">
+            <span>旅程進度</span>
+            <span>66%</span>
+          </div>
+          <div class="track" aria-hidden="true"><div class="fill"></div></div>
+          <div class="station-list">
+            <div class="station done"><b>1</b><span>五感舒壓</span><small>已完成</small></div>
+            <div class="station current"><b>2</b><span>深層舒眠</span><small>下一站</small></div>
+            <div class="station"><b>3</b><span>頭皮＋VIVISPA 身體療癒</span><small>待解鎖</small></div>
+          </div>
+        </div>
+        <div class="button-row">
+          <a class="btn primary" href="#stamps">查看戳章</a>
+          <a class="btn secondary" href="#report">年度報告</a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid" id="stamps">
+      <article class="card">
+        <div class="card-header">
+          <h2>我的旅程戳章</h2>
+          <p>每完成一個完整旅程，就會獲得一枚戳章。戳章代表你真的完成了一段療癒歷程。</p>
+        </div>
+        <div class="card-body">
+          <div class="stamp-grid">
+            <div class="stamp earned"><div><strong>淨化之旅</strong><span>清新頭皮旅人</span></div></div>
+            <div class="stamp current"><div><strong>舒壓之旅</strong><span>進行中 2 / 3</span></div></div>
+            <div class="stamp"><div><strong>滋養之旅</strong><span>待開始</span></div></div>
+            <div class="stamp"><div><strong>健康烏髮之旅</strong><span>待開始</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-header">
+          <h2>季節限定章</h2>
+          <p>每季會有一枚期間限定章。錯過就要等下一次季節主題回來。</p>
+        </div>
+        <div class="card-body">
+          <div class="season-list">
+            <div class="season">
+              <div class="season-icon">春</div>
+              <div><h3>春季淨化</h3><p>換季清爽，整理頭皮狀態。</p></div>
+              <div class="season-state">已取得</div>
+            </div>
+            <div class="season">
+              <div class="season-icon">夏</div>
+              <div><h3>夏日清爽</h3><p>悶熱季節的清新照顧。</p></div>
+              <div class="season-state active">進行中</div>
+            </div>
+            <div class="season">
+              <div class="season-icon">秋</div>
+              <div><h3>秋季修護</h3><p>換季乾燥時的髮肌修護。</p></div>
+              <div class="season-state">待開放</div>
+            </div>
+            <div class="season">
+              <div class="season-icon">冬</div>
+              <div><h3>冬季滋養</h3><p>年底前的深度滋養儀式。</p></div>
+              <div class="season-state">待開放</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="report card" id="report">
+      <article class="report-cover">
+        <h2>我的 2027<br>法芮療癒報告</h2>
+        <div class="report-stats">
+          <div class="report-stat"><span>年度來店</span><strong>14 次</strong></div>
+          <div class="report-stat"><span>療癒分鐘</span><strong>1,680</strong></div>
+          <div class="report-stat"><span>完成旅程</span><strong>3 趟</strong></div>
+          <div class="report-stat"><span>累積戳章</span><strong>8 枚</strong></div>
+        </div>
+      </article>
+      <article class="report-copy">
+        <div>
+          <h2>年底自動生成個人年度療癒報告</h2>
+          <p>系統會整理你今年完成的旅程、取得的戳章、最常選擇的療癒模式與累積療癒分鐘，變成一份只屬於你的年度療癒故事。</p>
+        </div>
+        <div>
+          <h2>下一年度旅程建議</h2>
+          <p>依今年的體驗紀錄，明年會推薦新的療癒路線，讓你從已完成的旅程自然接續下一段照顧。</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const toast = document.querySelector("#toast");
+    const nextVisit = document.querySelector(".next-visit");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    nextVisit.addEventListener("click", () => {
+      showToast("已提醒你：10/12 回到法芮，延續舒壓之旅第 2 站。");
+    });
+  </script>
+</body>
+</html>
